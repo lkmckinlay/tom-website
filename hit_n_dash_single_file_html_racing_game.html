@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Hit 'n' Dash — Racing Points (Bike Update)</title>
+  <style>
+    :root{--bg:#0b1220;--road:#2b2f33;--hud:#e6eef8}
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#081019);font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial}
+    #game{display:grid;place-items:center;height:100vh;padding:24px;box-sizing:border-box}
+    canvas{background:linear-gradient(#3a3f44,#272b2f);border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.6)}
+    .controls{color:var(--hud);text-align:center;margin-top:12px}
+    button{background:#11161b;color:var(--hud);border:1px solid rgba(255,255,255,.05);padding:8px 12px;border-radius:8px;margin:0 6px}
+    .note{color:#aebed6;font-size:13px;margin-top:8px}
+  </style>
+</head>
+<body>
+  <div id="game">
+    <canvas id="c" width="900" height="600"></canvas>
+    <div class="controls">
+      <button id="start">Start / Restart</button>
+      <button id="toggle-sound">Toggle Sound</button>
+      <div class="note">Controls: Arrow keys or A/D to steer — hit NPCs and cyclists to score points. This is a cartoon-style, non-graphic game.</div>
+    </div>
+  </div>
+
+<script>
+// Hit 'n' Dash — version with cyclists, bombers and extended point system
+
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+let keys = {}, running = false, soundOn = true, score = 0, timeLeft = 60;
+
+const player = { x: W/2, y: H - 120, w: 48, h: 80, angle: 0, speed: 0, maxSpeed: 6, accel: 0.25, friction: 0.08 };
+
+let npcs = [];
+const NPC_COUNT = 9;
+const BIKER_COUNT = 6;
+const BOMBER_COUNT = 1; // explosive NPCs: hitting them ends the run
+
+function rand(min,max){ return Math.random()*(max-min)+min }
+function spawnNPC(i){ return { type:'npc', id:i, x:rand(60,W-60), y:rand(-H,-20), w:28, h:36, vy:rand(0.6,1.6), color:`hsl(${Math.floor(rand(0,360))} 70% 55%)`, alive:true } }
+function spawnBiker(i){ return { type:'biker', id:i, x:rand(70,W-70), y:rand(-H,-20), w:38, h:28, vy:rand(1,2), color:`hsl(${Math.floor(rand(0,360))} 70% 45%)`, alive:true } }
+function spawnBomber(i){ return { type:'bomber', id:i, x:rand(80,W-80), y:rand(-H,-80), w:40, h:40, vy:rand(0.8,1.4), color:'#111111', alive:true } }
+
+let explosion = null; // {x,y,r,life}
+
+function reset(){ score=0; timeLeft=60; running=true; player.x=W/2; player.y=H-120; player.speed=0; npcs=[]; for(let i=0;i<NPC_COUNT;i++) npcs.push(spawnNPC(i)); for(let i=0;i<BIKER_COUNT;i++) npcs.push(spawnBiker(i)); for(let i=0;i<BOMBER_COUNT;i++) npcs.push(spawnBomber(i)); explosion=null; }
+
+function collide(a,b){ return !(a.x+a.w<b.x || a.x>b.x+b.w || a.y+a.h<b.y || a.y>b.y+b.h); }
+
+const AudioCtx=window.AudioContext||window.webkitAudioContext; let audioCtx;
+function beep(freq=440,dur=0.06,vol=0.12){ if(!soundOn)return; if(!audioCtx) audioCtx=new AudioCtx(); const o=audioCtx.createOscillator(); const g=audioCtx.createGain(); o.type='sine'; o.frequency.value=freq; g.gain.value=vol; o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime+dur); }
+
+function boomSound(){ if(!soundOn) return; if(!audioCtx) audioCtx = new AudioCtx(); const o1 = audioCtx.createOscillator(); const o2 = audioCtx.createOscillator(); const g = audioCtx.createGain(); o1.type='sawtooth'; o2.type='sine'; o1.frequency.value = 80; o2.frequency.value = 160; g.gain.value = 0.18; o1.connect(g); o2.connect(g); g.connect(audioCtx.destination); o1.start(); o2.start(); o1.stop(audioCtx.currentTime + 0.25); o2.stop(audioCtx.currentTime + 0.25); }
+
+function drawRoad(){ ctx.fillStyle='#0d1b10'; ctx.fillRect(0,0,60,H); ctx.fillRect(W-60,0,60,H); ctx.fillStyle='#2b2f33'; ctx.fillRect(60,0,W-120,H); ctx.strokeStyle='#dfe6ea'; ctx.lineWidth=6; ctx.setLineDash([30,18]); ctx.beginPath(); ctx.moveTo(W/2,0); ctx.lineTo(W/2,H); ctx.stroke(); ctx.setLineDash([]); }
+function drawPlayer(){ ctx.save(); ctx.translate(player.x,player.y); ctx.rotate(player.angle); ctx.fillStyle='#ff3b3b'; ctx.fillRect(-player.w/2,-player.h/2,player.w,player.h); ctx.fillStyle='#cde6ff'; ctx.fillRect(-player.w/2+6,-player.h/2+8,player.w-12,20); ctx.restore(); }
+
+function drawEntity(e){ if(e.type==='npc'){ ctx.fillStyle=e.color; ctx.fillRect(e.x,e.y,e.w,e.h); ctx.fillStyle='#ffd9b3'; ctx.fillRect(e.x+6,e.y-10,e.w-12,10); }
+  else if(e.type==='biker'){ ctx.fillStyle=e.color; ctx.beginPath(); ctx.ellipse(e.x+e.w/2,e.y+e.h/2,e.w/2,e.h/2,0,0,2*Math.PI); ctx.fill(); ctx.fillStyle='#f4e7a0'; ctx.fillRect(e.x+4,e.y-6,e.w-8,4); }
+  else if(e.type==='bomber'){ // distinct look
+    ctx.fillStyle=e.color; ctx.fillRect(e.x,e.y,e.w,e.h); ctx.fillStyle='#ee3b3b'; ctx.fillRect(e.x+6,e.y+6,8,8); ctx.fillRect(e.x+e.w-14,e.y+6,8,8); ctx.fillStyle='#333'; ctx.fillRect(e.x+10,e.y+e.h-10,e.w-20,6);
+  }
+}
+
+function drawHUD(){ ctx.fillStyle='rgba(0,0,0,0.45)'; ctx.fillRect(12,12,300,92); ctx.fillStyle='#dff3ff'; ctx.font='18px system-ui'; ctx.fillText('Score: '+score,24,36); ctx.fillText('Time: '+Math.max(0,Math.floor(timeLeft))+'s',24,60); ctx.fillStyle='#aebed6'; ctx.font='12px system-ui'; ctx.fillText('Pedestrian: +10 | Cyclist: +25 | Combo x2, x3...',24,82); ctx.fillStyle='#ffdddd'; ctx.font='11px system-ui'; ctx.fillText('Avoid bombers — hitting a bomber ends the run.',24,100); }
+
+let comboTimer=0, comboCount=0;
+function triggerExplosion(x,y){ explosion = { x, y, r:8, life:0.6 }; boomSound(); }
+
+function update(now){ const dt=1/60; if(!running) return;
+  if(keys['ArrowUp']||keys['w']) player.speed+=player.accel; if(keys['ArrowDown']||keys['s']) player.speed-=player.accel; if(keys['ArrowLeft']||keys['a']){ player.x-=3*(player.speed/2+1); player.angle=-0.12; } else if(keys['ArrowRight']||keys['d']){ player.x+=3*(player.speed/2+1); player.angle=0.12; } else player.angle*=0.9; player.speed-=player.friction; player.speed=Math.max(-2,Math.min(player.maxSpeed,player.speed)); player.y-=player.speed;
+  player.x=Math.max(70+player.w/2,Math.min(W-70-player.w/2,player.x));
+
+  for(let e of npcs){ e.y+=e.vy*(1+player.speed*0.1); if(e.y>H+60){ Object.assign(e, e.type==='npc'?spawnNPC(e.id) : (e.type==='biker'?spawnBiker(e.id):spawnBomber(e.id))); e.y=rand(-H,-20); e.alive=true; } }
+
+  for(let e of npcs){ if(e.alive && collide(player,e)){
+      if(e.type==='bomber'){
+        // immediate game over
+        e.alive=false; triggerExplosion(player.x, player.y-20); running=false; // game over state
+      } else {
+        e.alive=false; const base=e.type==='npc'?10:25; comboCount+=1; comboTimer=1.6; const points=base*comboCount; score+=points; beep(250+points*8,0.08,0.08); e.y+=80; setTimeout(()=>{ Object.assign(e, e.type==='npc'?spawnNPC(e.id):spawnBiker(e.id)); },700+Math.random()*500);
+      }
+    }
+  }
+
+  if(comboTimer>0) comboTimer-=dt; else comboCount=0;
+  if(explosion){ explosion.r += 160*dt; explosion.life -= dt; if(explosion.life<=0) explosion=null; }
+  timeLeft-=dt; if(timeLeft<=0) running=false;
+}
+
+function draw(){ ctx.clearRect(0,0,W,H); drawRoad(); for(let e of npcs) if(e) drawEntity(e); drawPlayer(); if(explosion){ ctx.save(); ctx.globalAlpha = Math.max(0, explosion.life/0.6); ctx.beginPath(); ctx.fillStyle='rgba(255,120,40,0.9)'; ctx.arc(explosion.x, explosion.y, explosion.r, 0, Math.PI*2); ctx.fill(); ctx.restore(); }
+  drawHUD(); if(!running){ ctx.fillStyle='rgba(2,6,8,0.6)'; ctx.fillRect(W/2-260,H/2-92,520,184); ctx.fillStyle='#fff'; ctx.font='28px system-ui'; ctx.textAlign='center'; ctx.fillText('Run Over — Score: '+score,W/2,H/2-12);
+    ctx.font='16px system-ui'; ctx.fillText('Press Start / Restart to play again',W/2,H/2+20);
+    // if ended by bomber, give different message
+    const endedByBomber = !running && explosion!==null;
+    if(endedByBomber){ ctx.fillStyle='#ffd6d6'; ctx.font='18px system-ui'; ctx.fillText('You hit an explosive — immediate game over.', W/2, H/2+56); }
+    ctx.textAlign='start'; }
+}
+
+function loop(){ update(); draw(); requestAnimationFrame(loop); }
+
+window.addEventListener('keydown',e=>{ keys[e.key]=true; }); window.addEventListener('keyup',e=>{ keys[e.key]=false; });
+
+document.getElementById('start').addEventListener('click',()=>{ reset(); if(audioCtx&&audioCtx.state==='suspended') audioCtx.resume(); }); document.getElementById('toggle-sound').addEventListener('click',()=>{ soundOn=!soundOn; document.getElementById('toggle-sound').innerText=soundOn?'Sound: On':'Sound: Off'; });
+for(let i=0;i<NPC_COUNT;i++) npcs.push(spawnNPC(i)); for(let i=0;i<BIKER_COUNT;i++) npcs.push(spawnBiker(i)); for(let i=0;i<BOMBER_COUNT;i++) npcs.push(spawnBomber(i)); requestAnimationFrame(loop);
+</script>
+</body>
+</html>
