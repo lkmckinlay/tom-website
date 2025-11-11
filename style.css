@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
 * {
     text-align:center;
+    font-family: "Quicksand", sans-serif;
 }
 
 h1 {
@@ -8,6 +10,26 @@ h1 {
 
 }
 img {
-    border: 2px black solid;
     margin: 3px;
+    background-color: #ACCFE6;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 10px;
+}
+.imgBox {
+    box-shadow: 3px 3px 0 0;
+    align-items: center;
+    background-color: salmon;
+    padding: 5px;
+    margin: 20px 20px 20px 20px;
+    border-radius: 10px;
+    border: 1px solid black;
+}
+h1 {
+    padding: 20px;
+    background-color: #ACCFE6;
+    margin: 20px;
+    border-radius: 10px;
+    box-shadow: 3px 3px 0 0;
+    border: 1px solid black;
 }
