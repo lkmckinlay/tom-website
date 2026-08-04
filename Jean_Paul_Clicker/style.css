@@ -1,0 +1,48 @@
+* {
+    text-align: center;
+}
+
+#upgrades {
+    width: 70%;
+    height: 200px;
+    display: grid;
+    grid-template-columns: auto auto;
+    background-color: palegoldenrod;
+    margin: 0 auto;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+#scorediv {
+    font-size: 30px;
+    margin: 10px;
+}
+img {
+    height: 500px;
+}
+
+
+.floating-text {
+    position: fixed;
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    pointer-events: none; /* so it doesn't block clicks underneath */
+    animation: floatUp 1s ease-out forwards;
+}
+
+@keyframes floatUp {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+}
