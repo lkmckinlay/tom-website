@@ -46,3 +46,7 @@ img {
         transform: translateY(-50px);
     }
 }
+
+#rand {
+    width: 100px;
+}

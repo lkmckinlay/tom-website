@@ -18,6 +18,8 @@ const error = document.getElementById('error');
 const pic = document.getElementById("pic");
 const doubleBtn = document.getElementById('doubleBtn');
 const upgrades = document.getElementById('upgrades');
+const rand = document.getElementById('rand');
+
 // Event listeners
 img.addEventListener('click', () => {
     increaseScore(false);
@@ -128,3 +130,13 @@ function showFloatingText(amount, x, y) {
     document.body.appendChild(el);
     setTimeout(() => el.remove(), 1000);
 }
+
+
+function RyanFace () {
+ rand.style.background = "url('./assests/ryan.jpeg') no-repeat center/cover"
+ setTimeout(() => {
+        rand.style.background = "white";
+    }, 500)
+}
+
+setTimeout(RyanFace, Math.floor(Math.random()* (900000 - 15000)) + 15000)
