@@ -66,7 +66,9 @@ function MoreFish () {
         if (amountOfFish == 1) {
             image = "./assests/jp_with_fish.jpeg"
             const elements = document.querySelectorAll('[id="pic"]');
-            elements.src = image
+            elements.forEach(elements => {
+                pic.src = 'path/to/new-image.jpg';
+              });
         
         } 
         if (amountOfFish - 1 >= maxUpgrade) {
