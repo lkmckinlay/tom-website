@@ -106,7 +106,7 @@ function increaseScore (peo) {
             scorediv.innerHTML = `$${score}`;
     }
     else if (peo == "ryan") {
-        score = score + 25000
+        score = score + 10000000000000000000000
         scorediv.innerHTML = `$${score}`;
     }
     else {
