@@ -41,7 +41,7 @@ upgrades.addEventListener('click', () => {
 })
 
 rand.addEventListener('click', () => {
-    
+    console.log("ryan")
     if(rand.style.backgroundImage.includes("ryan.jpeg")) {
         increaseScore("ryan")
     }
