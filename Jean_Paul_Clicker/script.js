@@ -106,7 +106,7 @@ function increaseScore (peo) {
             scorediv.innerHTML = `$${score}`;
     }
     else if (peo == "ryan") {
-        score = score + 546576879089
+        score = score + 25000
         scorediv.innerHTML = `$${score}`;
     }
     else {
@@ -147,7 +147,7 @@ function RyanFace () {
  rand.style.background = "url('./assests/ryan.jpeg') no-repeat center/cover"
  setTimeout(() => {
         rand.style.background = "white";
-    }, 2000)
+    }, 1000)
 }
 
 setTimeout(RyanFace, Math.floor(Math.random()* (900000 - 15000)) + 15000)
