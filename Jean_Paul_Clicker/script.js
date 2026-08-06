@@ -65,7 +65,8 @@ function MoreFish () {
         amountOfFish = amountOfFish + 1;
         if (amountOfFish == 1) {
             image = "./assests/jp_with_fish.jpeg"
-            pic.src = image
+            const elements = document.querySelectorAll('[id="pic"]');
+            elements.src = image
         
         } 
         if (amountOfFish - 1 >= maxUpgrade) {
