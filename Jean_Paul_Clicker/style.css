@@ -2,6 +2,10 @@
     text-align: center;
 }
 
+body {
+    position:relative;
+}
+
 #upgrades {
     width: 70%;
     height: 200px;
@@ -49,4 +53,7 @@ img {
 
 #rand {
     width: 100px;
+    z-index: 9999;
+    height: 200px;
+    position:absolute;
 }
