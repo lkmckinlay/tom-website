@@ -22,7 +22,7 @@ const rand = document.getElementById('rand');
 
 // Event listeners
 img.addEventListener('click', () => {
-    increaseScore(false);
+    increaseScore("none");
      showFloatingText(spc, event.clientX, event.clientY);
 });
 
@@ -36,9 +36,15 @@ doubleBtn.addEventListener('click', () => {
 upgrades.addEventListener('click', () => {
     console.log("yep")
     if(upgrades.style.backgroundImage.includes("mason.jpeg")) {
-        increaseScore(true)
+        increaseScore("mason")
     }
 })
+
+rand.addEventListener('click', () => {
+    if(rand.style.background = "url('./assests/ryan.jpeg')") {
+        increaseScore("ryan")
+    }
+});
 
 // Functions
 
@@ -93,10 +99,14 @@ function doubleJean () {
 
 
 //Score
-function increaseScore (mason) {
-    if (mason) {
+function increaseScore (var) {
+    if (var == "mason") {
             score = score + spc * 4;
             scorediv.innerHTML = `$${score}`;
+    }
+    else if (var == "ryan") {
+        score = score + 546576879089
+        scorediv.innerHTML = `$${score}`;
     }
     else {
     score = score + spc;
@@ -136,7 +146,7 @@ function RyanFace () {
  rand.style.background = "url('./assests/ryan.jpeg') no-repeat center/cover"
  setTimeout(() => {
         rand.style.background = "white";
-    }, 500)
+    }, 2000)
 }
 
 setTimeout(RyanFace, Math.floor(Math.random()* (900000 - 15000)) + 15000)
