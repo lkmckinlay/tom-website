@@ -100,12 +100,12 @@ function doubleJean () {
 
 
 //Score
-function increaseScore (var) {
-    if (var == "mason") {
+function increaseScore (peo) {
+    if (peo == "mason") {
             score = score + spc * 4;
             scorediv.innerHTML = `$${score}`;
     }
-    else if (var == "ryan") {
+    else if (peo == "ryan") {
         score = score + 546576879089
         scorediv.innerHTML = `$${score}`;
     }
