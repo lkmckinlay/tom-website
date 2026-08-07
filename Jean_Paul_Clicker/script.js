@@ -6,6 +6,7 @@ let image = "./assests/w_paul.png"
 let num_of_jean = 1
 
 
+
 let fishPrice = 50;
 const maxUpgrade = 2
 
@@ -66,7 +67,7 @@ function MoreFish () {
             image = "./assests/jp_with_fish.jpeg"
             const elements = document.querySelectorAll('[id="pic"]');
             elements.forEach(elements => {
-                pic.src = 'path/to/new-image.jpg';
+                pic.src = './assests/jp_with_fish.jpeg';
               });
         
         } 
@@ -89,15 +90,17 @@ function MoreFish () {
 function doubleJean () {
     if (score >= 200) {
     loop = num_of_jean
-    const elements = document.querySelectorAll('[id="pic"]');
-    elements.forEach(pic => {
-        pic.src = './assests/jp_with_fish.jpeg';
-    });
+    for (let i = 0; i < loop; i++) {
+        const clone = pic.cloneNode(true);
+        img.appendChild(clone);
+        num_of_jean++;
     }
     score = score - 200;
     scorediv.innerHTML = `$${score}`;
 }
     
+}
+
 
 //Score
 function increaseScore (peo) {
