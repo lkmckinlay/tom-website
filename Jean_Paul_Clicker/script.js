@@ -21,9 +21,9 @@ const upgrades = document.getElementById('upgrades');
 const rand = document.getElementById('rand');
 
 // Event listeners
-img.addEventListener('click', () => {
+img.addEventListener('click', (e) => {
     increaseScore("none");
-     showFloatingText(spc, event.clientX, event.clientY);
+     showFloatingText(spc, e.clientX, e.clientY);
 });
 
 fishBtn.addEventListener('click', () => {
@@ -65,6 +65,7 @@ function MoreFish () {
         amountOfFish = amountOfFish + 1;
         if (amountOfFish == 1) {
             image = "./assests/jp_with_fish.jpeg"
+            pic.src = image;
             document.querySelectorAll('.pic-img').forEach(el => {
                     el.src = image;
                 });
