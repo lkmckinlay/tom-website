@@ -67,7 +67,7 @@ function MoreFish () {
             image = "./assests/jp_with_fish.jpeg"
             const elements = document.querySelectorAll('[id="pic"]');
             elements.forEach(elements => {
-                pic.src = './assests/jp_with_fish.jpeg';
+                pic.src = image;
               });
         
         } 
