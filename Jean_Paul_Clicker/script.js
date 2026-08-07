@@ -6,7 +6,6 @@ let image = "./assests/w_paul.png"
 let num_of_jean = 1
 
 
-
 let fishPrice = 50;
 const maxUpgrade = 2
 
