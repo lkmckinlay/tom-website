@@ -92,7 +92,7 @@ function doubleJean () {
     loop = num_of_jean
     const elements = document.querySelectorAll('[id="pic"]');
     elements.forEach(pic => {
-        pic.src = 'path/to/new-image.jpg';
+        pic.src = './assests/jp_with_fish.jpeg';
     });
     }
     score = score - 200;
