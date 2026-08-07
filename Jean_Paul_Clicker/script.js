@@ -65,10 +65,9 @@ function MoreFish () {
         amountOfFish = amountOfFish + 1;
         if (amountOfFish == 1) {
             image = "./assests/jp_with_fish.jpeg"
-            const elements = document.querySelectorAll('[id="pic"]');
-            elements.forEach(pic => {
-                pic.src = image;
-              });
+            document.querySelectorAll('.pic-img').forEach(el => {
+                    el.src = image;
+                });
         
         } 
         if (amountOfFish - 1 >= maxUpgrade) {
@@ -91,9 +90,12 @@ function doubleJean () {
     if (score >= 200) {
     loop = num_of_jean
     for (let i = 0; i < loop; i++) {
-        const clone = pic.cloneNode(true);
-        img.appendChild(clone);
-        num_of_jean++;
+         const clone = pic.cloneNode(true);
+         clone.src = image;       // force it to match current image state right now
+         clone.removeAttribute('id'); // don't propagate the duplicate id further
+         clone.classList.add('pic-img');
+         img.appendChild(clone);
+         num_of_jean++;;
     }
     score = score - 200;
     scorediv.innerHTML = `$${score}`;
