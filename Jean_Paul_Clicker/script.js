@@ -90,17 +90,15 @@ function MoreFish () {
 function doubleJean () {
     if (score >= 200) {
     loop = num_of_jean
-    for (let i = 0; i < loop; i++) {
-        const clone = pic.cloneNode(true);
-        img.appendChild(clone);
-        num_of_jean++;
+    const elements = document.querySelectorAll('[id="pic"]');
+    elements.forEach(pic => {
+        pic.src = 'path/to/new-image.jpg';
+    });
     }
     score = score - 200;
     scorediv.innerHTML = `$${score}`;
 }
     
-}
-
 
 //Score
 function increaseScore (peo) {
