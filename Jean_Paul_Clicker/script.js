@@ -60,7 +60,7 @@ function MoreFish () {
         spc = spc * 2;
         fishPrice = fishPrice * 2;
         fishBtn.innerHTML = `$${fishPrice}`;
-        score = score - 50;
+        score = score - fishPrice;
         scorediv.innerHTML = `$${score}`;
         amountOfFish = amountOfFish + 1;
         if (amountOfFish == 1) {
