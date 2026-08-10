@@ -58,10 +58,10 @@ function MoreFish () {
     if (amountOfFish <= maxUpgrade) {
     if (score >= fishPrice) {
         spc = spc * 2;
-        fishPrice = fishPrice * 2;
         fishBtn.innerHTML = `$${fishPrice}`;
         score = score - fishPrice;
         scorediv.innerHTML = `$${score}`;
+        fishPrice = fishPrice * 2;
         amountOfFish = amountOfFish + 1;
         if (amountOfFish == 1) {
             image = "./assests/jp_with_fish.jpeg"
