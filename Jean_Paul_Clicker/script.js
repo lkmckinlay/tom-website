@@ -2,162 +2,172 @@
 let score = 0;
 let spc = 1;
 let amountOfFish = 0;
-let image = "./assests/w_paul.png"
-let num_of_jean = 1
-
-
+let image = "./assests/w_paul.png";
+let num_of_jean = 1;
+let terryprice = 1000;
+//max 15 terry
 
 let fishPrice = 50;
-const maxUpgrade = 2
+const maxUpgrade = 2;
+const amountofterry = 0;
 
-
-const img = document.getElementById('clicker');
-const scorediv = document.getElementById('scorediv');
-const fishBtn = document. getElementById('fishBtn');
-const error = document.getElementById('error');
+const img = document.getElementById("clicker");
+const scorediv = document.getElementById("scorediv");
+const fishBtn = document.getElementById("fishBtn");
+const error = document.getElementById("error");
 const pic = document.getElementById("pic");
-const doubleBtn = document.getElementById('doubleBtn');
-const upgrades = document.getElementById('upgrades');
-const rand = document.getElementById('rand');
+const doubleBtn = document.getElementById("doubleBtn");
+const upgrades = document.getElementById("upgrades");
+const rand = document.getElementById("rand");
+const bottom = document.getElementById("bottom");
+const terrybtn = document.getElementById("terrybtn");
 
 // Event listeners
-img.addEventListener('click', (e) => {
-    increaseScore("none");
-     showFloatingText(spc, e.clientX, e.clientY);
+img.addEventListener("click", (e) => {
+  increaseScore("none");
+  showFloatingText(spc, e.clientX, e.clientY);
 });
 
-fishBtn.addEventListener('click', () => {
-    MoreFish();
+fishBtn.addEventListener("click", () => {
+  MoreFish();
 });
 
-doubleBtn.addEventListener('click', () => {
-    doubleJean();
-})
-upgrades.addEventListener('click', () => {
-    console.log("yep")
-    if(upgrades.style.backgroundImage.includes("mason.jpeg")) {
-        increaseScore("mason")
-    }
-})
+doubleBtn.addEventListener("click", () => {
+  doubleJean();
+});
+upgrades.addEventListener("click", () => {
+  console.log("yep");
+  if (upgrades.style.backgroundImage.includes("mason.jpeg")) {
+    increaseScore("mason");
+  }
+});
 
-rand.addEventListener('click', () => {
-    console.log("ryan")
-    if(rand.style.backgroundImage.includes("ryan.jpeg")) {
-        increaseScore("ryan")
-    }
+rand.addEventListener("click", () => {
+  console.log("ryan");
+  if (rand.style.backgroundImage.includes("ryan.jpeg")) {
+    increaseScore("ryan");
+  }
+});
+
+terrybtn.addEventListener("click", () => {
+  addClicker();
 });
 
 // Functions
 
-function removeError () {
-    error.innerHTML = "";
+function removeError() {
+  error.innerHTML = "";
 }
 
 //Upgrades
-function MoreFish () {
-    if (amountOfFish <= maxUpgrade) {
+function MoreFish() {
+  if (amountOfFish <= maxUpgrade) {
     if (score >= fishPrice) {
-        spc = spc * 2;
-        score = score - fishPrice;
-        scorediv.innerHTML = `$${score}`;
-        fishPrice = fishPrice * 2;
-        fishBtn.innerHTML = `$${fishPrice}`;
-        amountOfFish = amountOfFish + 1;
-        if (amountOfFish == 1) {
-            image = "./assests/jp_with_fish.jpeg"
-            pic.src = image;
-            document.querySelectorAll('.pic-img').forEach(el => {
-                    el.src = image;
-                });
-        
-        } 
-        if (amountOfFish - 1 >= maxUpgrade) {
-            fishBtn.innerHTML = "MAX";
-        }
+      spc = spc * 2;
+      score = score - fishPrice;
+      scorediv.innerHTML = `$${score}`;
+      fishPrice = fishPrice * 2;
+      fishBtn.innerHTML = `$${fishPrice}`;
+      amountOfFish = amountOfFish + 1;
+      if (amountOfFish == 1) {
+        image = "./assests/jp_with_fish.jpeg";
+        pic.src = image;
+        document.querySelectorAll(".pic-img").forEach((el) => {
+          el.src = image;
+        });
       }
-      else {
-        error.innerHTML = "not enough money";
-        setTimeout(removeError, 3000);
-    }
-    }
-    else {
-        error.innerHTML = "You have reached max upgrades"
-        setTimeout(removeError, 3000)
+      if (amountOfFish - 1 >= maxUpgrade) {
+        fishBtn.innerHTML = "MAX";
       }
-
+    } else {
+      error.innerHTML = "not enough money";
+      setTimeout(removeError, 3000);
+    }
+  } else {
+    error.innerHTML = "You have reached max upgrades";
+    setTimeout(removeError, 3000);
+  }
 }
 
-function doubleJean () {
-    if (score >= 200) {
-    loop = num_of_jean
+function doubleJean() {
+  if (score >= 200) {
+    loop = num_of_jean;
     for (let i = 0; i < loop; i++) {
-         const clone = pic.cloneNode(true);
-         clone.src = image;       // force it to match current image state right now
-         clone.removeAttribute('id'); // don't propagate the duplicate id further
-         clone.classList.add('pic-img');
-         img.appendChild(clone);
-         num_of_jean++;;
+      const clone = pic.cloneNode(true);
+      clone.src = image; // force it to match current image state right now
+      clone.removeAttribute("id"); // don't propagate the duplicate id further
+      clone.classList.add("pic-img");
+      img.appendChild(clone);
+      num_of_jean++;
     }
     score = score - 200;
     scorediv.innerHTML = `$${score}`;
+  } else {
+    error.innerHTML = "not enough money";
+    setTimeout(removeError, 3000);
+  }
 }
-    
-}
-
 
 //Score
-function increaseScore (peo) {
-    if (peo == "mason") {
-            score = score + spc * 4;
-            scorediv.innerHTML = `$${score}`;
-    }
-    else if (peo == "ryan") {
-        score = score + 10000000000000000000000
-        scorediv.innerHTML = `$${score}`;
-    }
-    else {
+function increaseScore(peo) {
+  if (peo == "mason") {
+    score = score + spc * 4;
+    scorediv.innerHTML = `$${score}`;
+  } else if (peo == "ryan") {
+    score = score + 10000000000000000000000;
+    scorediv.innerHTML = `$${score}`;
+  } else {
     score = score + spc;
     scorediv.innerHTML = `$${score}`;
-    }
+  }
 }
 
-
-setTimeout(masonFace, Math.floor(Math.random() * (60000 - 1000) + 1000))
+setTimeout(masonFace, Math.floor(Math.random() * (60000 - 1000) + 1000));
 
 function masonFace() {
-    upgrades.style.background = "url('./assests/mason.jpeg') no-repeat center/cover";
-    setTimeout(() => {
-        upgrades.style.background = "palegoldenrod"
-    }, 500)
+  upgrades.style.background =
+    "url('./assests/mason.jpeg') no-repeat center/cover";
+  setTimeout(() => {
+    upgrades.style.background = "palegoldenrod";
+  }, 500);
 }
-
 
 function give(amount) {
-    score = score + amount;
-    scorediv.innerHTML = `$${score}`;
+  score = score + amount;
+  scorediv.innerHTML = `$${score}`;
 }
-
 
 function showFloatingText(amount, x, y) {
-    const el = document.createElement('div');
-    el.className = 'floating-text';
-    el.textContent = `+${amount}`;
-    el.style.left = x + 'px';
-    el.style.top = y + 'px';
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 1000);
+  const el = document.createElement("div");
+  el.className = "floating-text";
+  el.textContent = `+${amount}`;
+  el.style.left = x + "px";
+  el.style.top = y + "px";
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1000);
 }
 
-
-function RyanFace () {
- rand.style.background = "url('./assests/ryan.jpeg') no-repeat center/cover"
- setTimeout(() => {
-        rand.style.background = "white";
-    }, 1000)
+function RyanFace() {
+  rand.style.background = "url('./assests/ryan.jpeg') no-repeat center/cover";
+  setTimeout(() => {
+    rand.style.background = "white";
+  }, 1000);
 }
 
 function addClicker() {
-
+  if (score >= terryprice) {
+    const terry = document.createElement("img");
+    terry.classList.add("clicker");
+    terry.src = "./assests/terry.png";
+    bottom.appendChild(terry);
+  } else {
+    error.innerHTML = "not enough money";
+    setTimeout(removeError, 3000);
+  }
 }
 
-setTimeout(RyanFace, Math.floor(Math.random()* (900000 - 15000)) + 15000)
+function autoscore() {
+  give(amountofterry * spc);
+}
+
+setTimeout(RyanFace, Math.floor(Math.random() * (900000 - 15000)) + 15000);
