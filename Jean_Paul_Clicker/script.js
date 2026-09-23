@@ -156,4 +156,8 @@ function RyanFace () {
     }, 1000)
 }
 
+function addClicker() {
+
+}
+
 setTimeout(RyanFace, Math.floor(Math.random()* (900000 - 15000)) + 15000)
